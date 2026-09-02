@@ -247,78 +247,78 @@
 
 <script>
 
-// // พยัญชนะเดี่ยว: [ตัวอักษร, เสียงอ่าน, เสียงเทียบไทย, พยัญชนะท้าย หรือ null]
-// const consonants = [
-//   ["b","เบ่อ","บ",null],
-//   ["c","เก่อ","ก","/ก/"],
-//   ["d","เส่อ*","ซ/ส*",null],
-//   ["đ","เด่อ","ด",null],
-//   ["g","เก่อ*","ก",null],
-//   ["h","เห่อ","ห/ฮ",null],
-//   ["k","เก่อ","ก",null],
-//   ["l","เหล่อ","ล",null],
-//   ["m","เหม่อ","ม","/ม/"],
-//   ["n","เหน่อ","น","/น/"],
-//   ["p","เป่อ","ป","/บ/"],
-//   ["q","เกว่อ","กว",null],
-//   ["r","เหร่อ/เส่อ*","ซ/ส*",null],
-//   ["s","เส่อ","ซ/ส",null],
-//   ["t","เต่อ","ต","/ด/"],
-//   ["v","เหว่อ*","ว",null],
-//   ["x","เส่อ","ซ/ส",null],
-// ];
+// พยัญชนะเดี่ยว: [ตัวอักษร, เสียงอ่าน, เสียงเทียบไทย, พยัญชนะท้าย หรือ null]
+const consonants = [
+  ["b","เบ่อ","บ",null],
+  ["c","เก่อ","ก","/ก/"],
+  ["d","เส่อ*","ซ/ส*",null],
+  ["đ","เด่อ","ด",null],
+  ["g","เก่อ*","ก",null],
+  ["h","เห่อ","ห/ฮ",null],
+  ["k","เก่อ","ก",null],
+  ["l","เหล่อ","ล",null],
+  ["m","เหม่อ","ม","/ม/"],
+  ["n","เหน่อ","น","/น/"],
+  ["p","เป่อ","ป","/บ/"],
+  ["q","เกว่อ","กว",null],
+  ["r","เหร่อ/เส่อ*","ซ/ส*",null],
+  ["s","เส่อ","ซ/ส",null],
+  ["t","เต่อ","ต","/ด/"],
+  ["v","เหว่อ*","ว",null],
+  ["x","เส่อ","ซ/ส",null],
+];
 
-// // พยัญชนะประสม: [ตัวอักษร, เสียงอ่าน, เสียงเทียบไทย, พยัญชนะท้าย หรือ null]
-// const compoundConsonants = [
-//   ["ch","เจ่อ","จ (พ.ต้น) / ก (พ.ท้าย)","/ก/"],
-//   ["gh","เก่อ*","ก*",null],
-//   ["gi","เส่อ*","ซ/ส*",null],
-//   ["kh","เข่อ","ข/ค",null],
-//   ["ng/ngh","เหง่อ","ง","/ง/"],
-//   ["nh","เหญ่อ (ขึ้นจมูก)","ญ (ขึ้นจมูก)","/ง/, /ญ/ขึ้นจมูก"],
-//   ["ph","เฝ่อ","ฝ/ฟ",null],
-//   ["th","เถ่อ","ถ/ท",null],
-//   ["tr","เจ่อ","จ",null],
-// ];
+// พยัญชนะประสม: [ตัวอักษร, เสียงอ่าน, เสียงเทียบไทย, พยัญชนะท้าย หรือ null]
+const compoundConsonants = [
+  ["ch","เจ่อ","จ (พ.ต้น) / ก (พ.ท้าย)","/ก/"],
+  ["gh","เก่อ*","ก*",null],
+  ["gi","เส่อ*","ซ/ส*",null],
+  ["kh","เข่อ","ข/ค",null],
+  ["ng/ngh","เหง่อ","ง","/ง/"],
+  ["nh","เหญ่อ (ขึ้นจมูก)","ญ (ขึ้นจมูก)","/ง/, /ญ/ขึ้นจมูก"],
+  ["ph","เฝ่อ","ฝ/ฟ",null],
+  ["th","เถ่อ","ถ/ท",null],
+  ["tr","เจ่อ","จ",null],
+];
 
-// // สระเดี่ยว: [รูปสระ, คำอ่าน, note หรือ null]
-// const singleVowels = [
-//   ["-a","อา",null],
-//   ["-ă","อ๋า",null],
-//   ["-â","เอ๋อ",null],
-//   ["-e","แอ",null],
-//   ["-ê","เอ",null],
-//   ["-i","อี",null],
-//   ["-y","อี",null],
-//   ["-o","ออ",null],
-//   ["-ô","โอ",null],
-//   ["-ơ","เออ",null],
-//   ["-u","อู",null],
-//   ["-ư","อือ",null],
-// ];
+// สระเดี่ยว: [รูปสระ, คำอ่าน, note หรือ null]
+const singleVowels = [
+  ["-a","อา",null],
+  ["-ă","อ๋า",null],
+  ["-â","เอ๋อ",null],
+  ["-e","แอ",null],
+  ["-ê","เอ",null],
+  ["-i","อี",null],
+  ["-y","อี",null],
+  ["-o","ออ",null],
+  ["-ô","โอ",null],
+  ["-ơ","เออ",null],
+  ["-u","อู",null],
+  ["-ư","อือ",null],
+];
 
-// // สระประสม: [รูปสระ, คำอ่าน, note]
-// const compoundVowels = [
-//   ["-ia","เอีย","ไม่มีตัวสะกด"],
-//   ["-ya","เอีย","นาน ๆ โผล่มาที เช่น khuya"],
-//   ["-iê","เอีย","มีตัวสะกด"],
-//   ["-yê","เอีย","มีตัวสะกด ไม่มีพยัญชนะต้น"],
-//   ["-ua","อัว","ไม่มีตัวสะกด"],
-//   ["-uô","อัว","มีตัวสะกด"],
-//   ["-uâ","อัว","มีตัวสะกด"],
-//   ["-ưa","เอือ","ไม่มีตัวสะกด"],
-//   ["-ươ","เอือ","มีตัวสะกด"],
-// ];
+// สระประสม: [รูปสระ, คำอ่าน, note]
+const compoundVowels = [
+  ["-ia","เอีย","ไม่มีตัวสะกด"],
+  ["-ya","เอีย","นาน ๆ โผล่มาที เช่น khuya"],
+  ["-iê","เอีย","มีตัวสะกด"],
+  ["-yê","เอีย","มีตัวสะกด ไม่มีพยัญชนะต้น"],
+  ["-ua","อัว","ไม่มีตัวสะกด"],
+  ["-uô","อัว","มีตัวสะกด"],
+  ["-uâ","อัว","มีตัวสะกด"],
+  ["-ưa","เอือ","ไม่มีตัวสะกด"],
+  ["-ươ","เอือ","มีตัวสะกด"],
+];
 
-// // วรรณยุกต์: [ชื่อวรรณยุกต์, ลักษณะเสียง, ตัวอย่าง]
-// const tones = [
-//   ["Ngang (ไม่มีเครื่องหมาย)","สามัญ","a"],
-//   ["Huyền ( ` )","กลางลง","à"],
-//   ["Hỏi ( ˀ )","กลางขึ้นแล้วต่ำลง","ả"],
-//   ["Sắc ( ´ )","กลางสูง","á"],
-//   ["Ngã ( ~ )","หยุดกลางเสียงแล้วสูงขึ้น","ã"],
-//   ["Nặng ( . )","ต่ำลงแล้วหยุดท้ายเสียง","ạ"],
-// ];
+// วรรณยุกต์: [ชื่อวรรณยุกต์, ลักษณะเสียง, ตัวอย่าง]
+const tones = [
+  ["Ngang (ไม่มีเครื่องหมาย)","สามัญ","a"],
+  ["Huyền ( ` )","กลางลง","à"],
+  ["Hỏi ( ˀ )","กลางขึ้นแล้วต่ำลง","ả"],
+  ["Sắc ( ´ )","กลางสูง","á"],
+  ["Ngã ( ~ )","หยุดกลางเสียงแล้วสูงขึ้น","ã"],
+  ["Nặng ( . )","ต่ำลงแล้วหยุดท้ายเสียง","ạ"],
+];
 
 // Chính tả ครั้งที่ 2: [คำเวียดนาม, คำอ่าน, คำแปล]
 const dictation2 = [
@@ -359,34 +359,34 @@ const dictation2 = [
 // รวมข้อมูลทั้งหมดเป็น flashcard: {cat, front, back}
 let allCards = [];
 
-// consonants.forEach(([letter,pron,thai,final])=>{
-//   let back = `เสียงอ่าน: ${pron}<br>เสียงเทียบไทย: <b>${thai}</b>`;
-//   if(final) back += `<br>พยัญชนะท้าย: ${final}`;
-//   allCards.push({cat:"พยัญชนะเดี่ยว", front:letter, back});
-// });
+consonants.forEach(([letter,pron,thai,final])=>{
+  let back = `เสียงอ่าน: ${pron}<br>เสียงเทียบไทย: <b>${thai}</b>`;
+  if(final) back += `<br>พยัญชนะท้าย: ${final}`;
+  allCards.push({cat:"พยัญชนะเดี่ยว", front:letter, back, viet:letter});
+});
 
-// compoundConsonants.forEach(([letter,pron,thai,final])=>{
-//   let back = `เสียงอ่าน: ${pron}<br>เสียงเทียบไทย: <b>${thai}</b>`;
-//   if(final) back += `<br>พยัญชนะท้าย: ${final}`;
-//   allCards.push({cat:"พยัญชนะประสม", front:letter, back});
-// });
+compoundConsonants.forEach(([letter,pron,thai,final])=>{
+  let back = `เสียงอ่าน: ${pron}<br>เสียงเทียบไทย: <b>${thai}</b>`;
+  if(final) back += `<br>พยัญชนะท้าย: ${final}`;
+  allCards.push({cat:"พยัญชนะประสม", front:letter, back, viet:letter});
+});
 
-// singleVowels.forEach(([vowel,thai,note])=>{
-//   let back = `คำอ่าน: <b>${thai}</b>`;
-//   if(note) back += `<br>Note: ${note}`;
-//   allCards.push({cat:"สระเดี่ยว", front:vowel, back});
-// });
+singleVowels.forEach(([vowel,thai,note])=>{
+  let back = `คำอ่าน: <b>${thai}</b>`;
+  if(note) back += `<br>Note: ${note}`;
+  allCards.push({cat:"สระเดี่ยว", front:vowel, back, viet:vowel});
+});
 
-// compoundVowels.forEach(([vowel,thai,note])=>{
-//   let back = `คำอ่าน: <b>${thai}</b>`;
-//   if(note) back += `<br>Note: ${note}`;
-//   allCards.push({cat:"สระประสม", front:vowel, back});
-// });
+compoundVowels.forEach(([vowel,thai,note])=>{
+  let back = `คำอ่าน: <b>${thai}</b>`;
+  if(note) back += `<br>Note: ${note}`;
+  allCards.push({cat:"สระประสม", front:vowel, back, viet:vowel});
+});
 
-// tones.forEach(([name,desc,example])=>{
-//   const back = `ชื่อวรรณยุกต์: <b>${name}</b><br>ลักษณะเสียง: ${desc}`;
-//   allCards.push({cat:"วรรณยุกต์", front:example, back});
-// });
+tones.forEach(([name,desc,example])=>{
+  const back = `ชื่อวรรณยุกต์: <b>${name}</b><br>ลักษณะเสียง: ${desc}`;
+  allCards.push({cat:"วรรณยุกต์", front:example, back, viet:example});
+});
 
 dictation2.forEach(([viet,pron,meaning])=>{
   const back = `คำเวียดนาม: <b>${viet}</b><br>คำแปล: ${meaning}`;
@@ -394,8 +394,8 @@ dictation2.forEach(([viet,pron,meaning])=>{
 });
 
 // Logic
-// const categories = ["ทั้งหมด","พยัญชนะเดี่ยว","พยัญชนะประสม","สระเดี่ยว","สระประสม","วรรณยุกต์","Chính tả 2"];
-const categories = ["Chính tả 2"];
+const categories = ["ทั้งหมด","พยัญชนะเดี่ยว","พยัญชนะประสม","สระเดี่ยว","สระประสม","วรรณยุกต์","Chính tả 2"];
+// const categories = ["Chính tả 2"];
 let currentCards = [...allCards];
 let idx = 0;
 let flipped = false;
@@ -414,11 +414,11 @@ filterSelect.addEventListener('change', ()=>{
 });
 
 function frontFontSize(text){
-  // const len = text.length;
-  // if(len<=3) return 56;
-  // if(len<=8) return 38;
-  // if(len<=15) return 27;
-  return 56;
+  const len = text.length;
+  if(len<=3) return 56;
+  if(len<=8) return 38;
+  if(len<=15) return 27;
+  return 47;
 }
 
 function render(){
@@ -464,14 +464,37 @@ function render(){
   progressFill.style.width = `${((idx+1)/currentCards.length)*100}%`;
 }
 
+let vietVoice = null;
+
+function loadVietVoice(){
+  const voices = speechSynthesis.getVoices();
+  vietVoice = voices.find(v => v.lang === 'vi-VN')
+           || voices.find(v => v.lang.startsWith('vi'))
+           || null;
+}
+
+// โหลดทันทีถ้ามีอยู่แล้ว และโหลดซ้ำเมื่อรายชื่อเสียงพร้อม
+loadVietVoice();
+if (speechSynthesis.onvoiceschanged !== undefined) {
+  speechSynthesis.onvoiceschanged = loadVietVoice;
+}
+
 function speakWord(){
   if(currentCards.length===0) return;
   const word = currentCards[idx].viet;
   if(!word) return;
+
+  speechSynthesis.cancel();
   const utter = new SpeechSynthesisUtterance(word);
   utter.lang = 'vi-VN';
   utter.rate = 0.85;
-  speechSynthesis.cancel();
+
+  if (vietVoice) {
+    utter.voice = vietVoice;
+  } else {
+    alert('เครื่องนี้ไม่มีเสียงภาษาเวียดนามติดตั้งไว้ อาจอ่านออกเสียงไม่ถูกต้อง');
+  }
+
   speechSynthesis.speak(utter);
 }
   
