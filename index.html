@@ -184,6 +184,11 @@
     background:var(--lacquer);
     color:#fff;
   }
+  .btn-speak{
+  grid-column:1 / -1;
+  background:var(--gold);
+  color:#fff;
+  }
   .btn-shuffle{
     background:var(--jade);
     color:#fff;
@@ -231,6 +236,9 @@
 </div>
 <div class="btn-row">
   <button class="btn-flip" onclick="flipCard()">พลิกการ์ด</button>
+</div>
+<div class="btn-row">
+  <button class="btn-speak" onclick="speakWord()">ฟังเสียง</button>
 </div>
 <div class="btn-row secondary">
   <button class="btn-shuffle" onclick="shuffleCards()">สุ่ม</button>
@@ -382,7 +390,7 @@ let allCards = [];
 
 dictation2.forEach(([viet,pron,meaning])=>{
   const back = `คำเวียดนาม: <b>${viet}</b><br>คำแปล: ${meaning}`;
-  allCards.push({cat:"Chính tả 2", front:pron, back});
+  allCards.push({cat:"Chính tả 2", front:pron, back, viet});
 });
 
 // Logic
@@ -456,6 +464,17 @@ function render(){
   progressFill.style.width = `${((idx+1)/currentCards.length)*100}%`;
 }
 
+function speakWord(){
+  if(currentCards.length===0) return;
+  const word = currentCards[idx].viet;
+  if(!word) return;
+  const utter = new SpeechSynthesisUtterance(word);
+  utter.lang = 'vi-VN';
+  utter.rate = 0.85;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utter);
+}
+  
 function flipCard(){
   if(currentCards.length===0) return;
   flipped = !flipped;
