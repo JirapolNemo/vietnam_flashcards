@@ -408,7 +408,7 @@ categories.forEach(c=>{
 });
 filterSelect.addEventListener('change', ()=>{
   const f = filterSelect.value;
-  currentCards = f === "Chính tả 2" ? [...allCards] : allCards.filter(c=>c.cat===f);
+  currentCards = f === "ทั้งหมด" ? [...allCards] : allCards.filter(c=>c.cat===f);
   idx = 0; flipped = false;
   render();
 });
