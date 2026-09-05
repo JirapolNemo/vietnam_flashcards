@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Flashcard Chính tả ครั้งที่ 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1f2430;
+    --paper:#faf7f0;
+    --lacquer:#8a1f2b;
+    --lacquer-dark:#6b1620;
+    --gold:#c99a3c;
+    --jade:#2f5d50;
+    --line:#e4ddcd;
+    --card-bg:#fffdf8;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Sarabun','Noto Sans Thai','Segoe UI',sans-serif;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:20px 14px 32px;
+  }
+  header{
+    width:100%;
+    max-width:520px;
+    text-align:center;
+    margin-bottom:14px;
+  }
+  header .kicker{
+    font-size:12px;
+    letter-spacing:0.08em;
+    color:var(--jade);
+    font-weight:600;
+  }
+  header h1{
+    font-size:22px;
+    margin:4px 0 0;
+    font-weight:700;
+    color:var(--lacquer-dark);
+  }
+  .controls-top{
+    width:100%;
+    max-width:520px;
+    display:flex;
+    gap:8px;
+    margin-bottom:16px;
+  }
+  select{
+    flex:1;
+    padding:11px 12px;
+    border-radius:10px;
+    border:1.5px solid var(--line);
+    background:var(--card-bg);
+    font-size:15px;
+    color:var(--ink);
+    font-family:inherit;
+  }
+  .progress{
+    width:100%;
+    max-width:520px;
+    height:4px;
+    background:var(--line);
+    border-radius:4px;
+    overflow:hidden;
+    margin-bottom:18px;
+  }
+  .progress-fill{
+    height:100%;
+    background:linear-gradient(90deg,var(--jade),var(--gold));
+    transition:width .25s ease;
+  }
+  .card-wrap{
+    width:100%;
+    max-width:520px;
+    perspective:1200px;
+    margin-bottom:8px;
+  }
+  .card{
+    position:relative;
+    width:100%;
+    min-height:280px;
+    border-radius:20px;
+    background:var(--card-bg);
+    border:1.5px solid var(--line);
+    box-shadow:0 6px 24px rgba(107,22,32,0.08);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:32px 24px;
+    text-align:center;
+    cursor:pointer;
+    user-select:none;
+    transition:transform .12s ease;
+  }
+  .card:active{ transform:scale(0.985); }
+  .card::before{
+    content:"";
+    position:absolute;
+    top:14px; left:14px; right:14px; bottom:14px;
+    border:1px solid var(--gold);
+    border-radius:14px;
+    opacity:0.35;
+    pointer-events:none;
+  }
+  .cat-label{
+    font-size:12.5px;
+    color:var(--lacquer);
+    font-weight:700;
+    letter-spacing:0.03em;
+    margin-bottom:14px;
+  }
+  .front-text{
+    font-weight:800;
+    color:var(--ink);
+    line-height:1;
+    word-break:break-word;
+  }
+  .back-content{
+    display:none;
+    width:100%;
+  }
+  .back-content .front-echo{
+    font-size:15px;
+    color:#8a8578;
+    margin-bottom:10px;
+  }
+  .back-line{
+    font-size:19px;
+    line-height:1.7;
+    color:var(--ink);
+  }
+  .back-line b{ color:var(--lacquer-dark); }
+  .flip-hint{
+    margin-top:16px;
+    font-size:12px;
+    color:#a39c8a;
+  }
+  .counter{
+    text-align:center;
+    font-size:13px;
+    color:#9b9384;
+    margin:10px 0 20px;
+  }
+  .btn-row{
+    width:100%;
+    max-width:520px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .btn-row.secondary{
+    grid-template-columns:1fr 1fr;
+  }
+  button{
+    font-family:inherit;
+    font-size:15px;
+    font-weight:600;
+    padding:14px 10px;
+    border-radius:12px;
+    border:none;
+    cursor:pointer;
+    transition:opacity .15s;
+  }
+  button:active{ opacity:0.7; }
+  .btn-nav{
+    background:var(--card-bg);
+    border:1.5px solid var(--line);
+    color:var(--ink);
+  }
+  .btn-flip{
+    grid-column:1 / -1;
+    background:var(--lacquer);
+    color:#fff;
+  }
+  .btn-speak{
+  grid-column:1 / -1;
+  background:var(--gold);
+  color:#fff;
+  }
+  .btn-shuffle{
+    background:var(--jade);
+    color:#fff;
+  }
+  .btn-reset{
+    background:var(--card-bg);
+    border:1.5px solid var(--line);
+    color:#9b9384;
+  }
+  @media (max-width:380px){
+    .front-text{ font-size:15vw !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">TIẾNG VIỆT · เสียงเทียบภาษาไทย</div>
+  <h1>Flashcard เวียดนาม</h1>
+</header>
+
+<div class="controls-top">
+  <select id="filterSelect"></select>
+</div>
+
+<div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="card-wrap">
+  <div class="card" id="card" onclick="flipCard()">
+    <div class="cat-label" id="catLabel"></div>
+    <div class="front-text" id="frontText" style="font-size:52px;"></div>
+    <div class="back-content" id="backContent">
+      <div class="front-echo" id="frontEcho"></div>
+      <div class="back-line" id="backLine"></div>
+    </div>
+    <div class="flip-hint" id="flipHint">แตะเพื่อดูคำตอบ</div>
+  </div>
+</div>
+
+<div class="counter" id="counter"></div>
+
+<div class="btn-row">
+  <button class="btn-nav" onclick="prevCard()">ก่อนหน้า</button>
+  <button class="btn-nav" onclick="nextCard()">ถัดไป</button>
+</div>
+<div class="btn-row">
+  <button class="btn-flip" onclick="flipCard()">พลิกการ์ด</button>
+</div>
+<div class="btn-row">
+  <button class="btn-speak" onclick="speakWord()">ฟังเสียง</button>
+</div>
+<div class="btn-row secondary">
+  <button class="btn-shuffle" onclick="shuffleCards()">สุ่ม</button>
+  <button class="btn-reset" onclick="resetOrder()">เรียงใหม่</button>
+</div>
+
+<script>
+
+// พยัญชนะเดี่ยว: [ตัวอักษร, เสียงอ่าน, เสียงเทียบไทย, พยัญชนะท้าย หรือ null]
+const consonants = [
+  ["b","เบ่อ","บ",null],
+  ["c","เก่อ","ก","/ก/"],
+  ["d","เส่อ*","ซ/ส*",null],
+  ["đ","เด่อ","ด",null],
+  ["g","เก่อ*","ก",null],
+  ["h","เห่อ","ห/ฮ",null],
+  ["k","เก่อ","ก",null],
+  ["l","เหล่อ","ล",null],
+  ["m","เหม่อ","ม","/ม/"],
+  ["n","เหน่อ","น","/น/"],
+  ["p","เป่อ","ป","/บ/"],
+  ["q","เกว่อ","กว",null],
+  ["r","เหร่อ/เส่อ*","ซ/ส*",null],
+  ["s","เส่อ","ซ/ส",null],
+  ["t","เต่อ","ต","/ด/"],
+  ["v","เหว่อ*","ว",null],
+  ["x","เส่อ","ซ/ส",null],
+];
+
+// พยัญชนะประสม: [ตัวอักษร, เสียงอ่าน, เสียงเทียบไทย, พยัญชนะท้าย หรือ null]
+const compoundConsonants = [
+  ["ch","เจ่อ","จ (พ.ต้น) / ก (พ.ท้าย)","/ก/"],
+  ["gh","เก่อ*","ก*",null],
+  ["gi","เส่อ*","ซ/ส*",null],
+  ["kh","เข่อ","ข/ค",null],
+  ["ng/ngh","เหง่อ","ง","/ง/"],
+  ["nh","เหญ่อ (ขึ้นจมูก)","ญ (ขึ้นจมูก)","/ง/, /ญ/ขึ้นจมูก"],
+  ["ph","เฝ่อ","ฝ/ฟ",null],
+  ["th","เถ่อ","ถ/ท",null],
+  ["tr","เจ่อ","จ",null],
+];
+
+// สระเดี่ยว: [รูปสระ, คำอ่าน, note หรือ null]
+const singleVowels = [
+  ["-a","อา",null],
+  ["-ă","อ๋า",null],
+  ["-â","เอ๋อ",null],
+  ["-e","แอ",null],
+  ["-ê","เอ",null],
+  ["-i","อี",null],
+  ["-y","อี",null],
+  ["-o","ออ",null],
+  ["-ô","โอ",null],
+  ["-ơ","เออ",null],
+  ["-u","อู",null],
+  ["-ư","อือ",null],
+];
+
+// สระประสม: [รูปสระ, คำอ่าน, note]
+const compoundVowels = [
+  ["-ia","เอีย","ไม่มีตัวสะกด"],
+  ["-ya","เอีย","นาน ๆ โผล่มาที เช่น khuya"],
+  ["-iê","เอีย","มีตัวสะกด"],
+  ["-yê","เอีย","มีตัวสะกด ไม่มีพยัญชนะต้น"],
+  ["-ua","อัว","ไม่มีตัวสะกด"],
+  ["-uô","อัว","มีตัวสะกด"],
+  ["-uâ","อัว","มีตัวสะกด"],
+  ["-ưa","เอือ","ไม่มีตัวสะกด"],
+  ["-ươ","เอือ","มีตัวสะกด"],
+];
+
+// วรรณยุกต์: [ชื่อวรรณยุกต์, ลักษณะเสียง, ตัวอย่าง]
+const tones = [
+  ["Ngang (ไม่มีเครื่องหมาย)","สามัญ","a"],
+  ["Huyền ( ` )","กลางลง","à"],
+  ["Hỏi ( ˀ )","กลางขึ้นแล้วต่ำลง","ả"],
+  ["Sắc ( ´ )","กลางสูง","á"],
+  ["Ngã ( ~ )","หยุดกลางเสียงแล้วสูงขึ้น","ã"],
+  ["Nặng ( . )","ต่ำลงแล้วหยุดท้ายเสียง","ạ"],
+];
+
+// Chính tả ครั้งที่ 2: [คำเวียดนาม, คำอ่าน, คำแปล]
+const dictation2 = [
+  // --- ตามในหนังสือที่ลิสต์มาให้ ---
+  ["phải","ไฟ้","ถูก, ต้อง, ขวา"],
+  ["người","เหงื่อย","คน"],
+  ["nước","เนื๊อก","ประเทศ, น้ำ"],
+  ["Vâng","เวิง","ค่ะ/ครับ (คำตอบรับ)"],
+  ["tôi","โตย","ฉัน, ผม"],
+  ["nào","หน่าว","ไหน"],
+  ["đến từ","เด๊น ตื่อ","มาจาก"],
+  ["đây","เดย","นี่"],
+  ["phải không","ไฟ้ คอม (คง หุบปาก)","...ใช่ไหม"],
+  ["Đúng rồi","ดุ๊ง โซ่ย","ถูกแล้ว/ใช่แล้ว"],
+  ["nói","น๋อย","พูด"],
+  ["tiếng","เตี๋ยง","ภาษา"],
+  // --- ชื่อประเทศ ---
+  ["Úc","อุ๊ก","ออสเตรเลีย"],
+  ["Campuchia","กัม-ปู-เจีย","กัมพูชา"],
+  ["Trung Quốc","จุง ก๊วก","จีน"], 
+  ["Anh","อัญ","อังกฤษ"],
+  ["Pháp","ฟ้าบ","ฝรั่งเศส"],
+  ["Đức","ดึ๊ก","เยอรมนี"],
+  ["Ấn Độ","เอิ๊น โด่","อินเดีย"],
+  ["Ý","อี๊","อิตาลี"],
+  ["Nhật Bản","เญิด บ๋าน","ญี่ปุ่น"],
+  ["Hàn Quốc","ห่าน ก๊วก","เกาหลี (ใต้)"],
+  ["Lào","หล่าว","ลาว"],
+  ["Nga","งา","รัสเซีย"],
+  ["Tây Ban Nha","เตย บาน ญา","สเปน"],
+  ["Thụy Sĩ","ถวี ซี๊","สวิตเซอร์แลนด์"],
+  ["Thái Lan","ท้าย ลาน","ไทย"],
+  ["Mỹ","หมี๊","สหรัฐอเมริกา"],
+  ["Hoa Kỳ","ฮวา กี่","สหรัฐอเมริกา (ทางการ)"],
+  ["Việt Nam","เหวียด นาม","เวียดนาม"],
+];
+
+// รวมข้อมูลทั้งหมดเป็น flashcard: {cat, front, back}
+let allCards = [];
+
+consonants.forEach(([letter,pron,thai,final])=>{
+  let back = `เสียงอ่าน: ${pron}<br>เสียงเทียบไทย: <b>${thai}</b>`;
+  if(final) back += `<br>พยัญชนะท้าย: ${final}`;
+  allCards.push({cat:"พยัญชนะเดี่ยว", front:letter, back, viet:letter});
+});
+
+compoundConsonants.forEach(([letter,pron,thai,final])=>{
+  let back = `เสียงอ่าน: ${pron}<br>เสียงเทียบไทย: <b>${thai}</b>`;
+  if(final) back += `<br>พยัญชนะท้าย: ${final}`;
+  allCards.push({cat:"พยัญชนะประสม", front:letter, back, viet:letter});
+});
+
+singleVowels.forEach(([vowel,thai,note])=>{
+  let back = `คำอ่าน: <b>${thai}</b>`;
+  if(note) back += `<br>Note: ${note}`;
+  allCards.push({cat:"สระเดี่ยว", front:vowel, back, viet:vowel});
+});
+
+compoundVowels.forEach(([vowel,thai,note])=>{
+  let back = `คำอ่าน: <b>${thai}</b>`;
+  if(note) back += `<br>Note: ${note}`;
+  allCards.push({cat:"สระประสม", front:vowel, back, viet:vowel});
+});
+
+tones.forEach(([name,desc,example])=>{
+  const back = `ชื่อวรรณยุกต์: <b>${name}</b><br>ลักษณะเสียง: ${desc}`;
+  allCards.push({cat:"วรรณยุกต์", front:example, back, viet:example});
+});
+
+dictation2.forEach(([viet,pron,meaning])=>{
+  const back = `คำเวียดนาม: <b>${viet}</b><br>คำแปล: ${meaning}`;
+  allCards.push({cat:"Chính tả 2", front:pron, back, viet});
+});
+
+// Logic
+const categories = ["ทั้งหมด","พยัญชนะเดี่ยว","พยัญชนะประสม","สระเดี่ยว","สระประสม","วรรณยุกต์","Chính tả 2"];
+// const categories = ["Chính tả 2"];
+let currentCards = [...allCards];
+let idx = 0;
+let flipped = false;
+
+const filterSelect = document.getElementById('filterSelect');
+categories.forEach(c=>{
+  const opt = document.createElement('option');
+  opt.value = c; opt.textContent = c;
+  filterSelect.appendChild(opt);
+});
+filterSelect.addEventListener('change', ()=>{
+  const f = filterSelect.value;
+  currentCards = f === "ทั้งหมด" ? [...allCards] : allCards.filter(c=>c.cat===f);
+  idx = 0; flipped = false;
+  render();
+});
+
+function frontFontSize(text){
+  const len = text.length;
+  // if(len<=3) return 56;
+  // if(len<=8) return 38;
+  // if(len<=15) return 27;
+  return 50;
+}
+
+function render(){
+  const card = document.getElementById('card');
+  const catLabel = document.getElementById('catLabel');
+  const frontText = document.getElementById('frontText');
+  const backContent = document.getElementById('backContent');
+  const frontEcho = document.getElementById('frontEcho');
+  const backLine = document.getElementById('backLine');
+  const flipHint = document.getElementById('flipHint');
+  const counter = document.getElementById('counter');
+  const progressFill = document.getElementById('progressFill');
+
+  if(currentCards.length===0){
+    catLabel.textContent = "";
+    frontText.textContent = "ไม่มีการ์ดในหมวดนี้";
+    frontText.style.fontSize = "22px";
+    backContent.style.display = "none";
+    flipHint.style.display = "none";
+    counter.textContent = "";
+    progressFill.style.width = "0%";
+    return;
+  }
+
+  const c = currentCards[idx];
+  catLabel.textContent = c.cat;
+
+  if(flipped){
+    frontText.style.display = "none";
+    backContent.style.display = "block";
+    frontEcho.textContent = c.front;
+    backLine.innerHTML = c.back;
+    flipHint.textContent = "แตะเพื่อกลับด้าน";
+  } else {
+    frontText.style.display = "block";
+    backContent.style.display = "none";
+    frontText.textContent = c.front;
+    frontText.style.fontSize = frontFontSize(c.front) + "px";
+    flipHint.textContent = "แตะเพื่อดูคำตอบ";
+  }
+
+  counter.textContent = `${idx+1} / ${currentCards.length}`;
+  progressFill.style.width = `${((idx+1)/currentCards.length)*100}%`;
+}
+
+let vietVoice = null;
+
+function loadVietVoice(){
+  const voices = speechSynthesis.getVoices();
+  vietVoice = voices.find(v => v.lang === 'vi-VN')
+           || voices.find(v => v.lang.startsWith('vi'))
+           || null;
+}
+
+// โหลดทันทีถ้ามีอยู่แล้ว และโหลดซ้ำเมื่อรายชื่อเสียงพร้อม
+loadVietVoice();
+if (speechSynthesis.onvoiceschanged !== undefined) {
+  speechSynthesis.onvoiceschanged = loadVietVoice;
+}
+
+function speakWord(){
+  if(currentCards.length===0) return;
+  const word = currentCards[idx].viet;
+  if(!word) return;
+
+  speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(word);
+  utter.lang = 'vi-VN';
+  utter.rate = 0.85;
+
+  if (vietVoice) {
+    utter.voice = vietVoice;
+  } else {
+    alert('เครื่องนี้ไม่มีเสียงภาษาเวียดนามติดตั้งไว้ อาจอ่านออกเสียงไม่ถูกต้อง');
+  }
+
+  speechSynthesis.speak(utter);
+}
+  
+function flipCard(){
+  if(currentCards.length===0) return;
+  flipped = !flipped;
+  render();
+}
+
+function nextCard(){
+  if(currentCards.length===0) return;
+  idx = (idx+1) % currentCards.length;
+  flipped = false;
+  render();
+}
+
+function prevCard(){
+  if(currentCards.length===0) return;
+  idx = (idx-1+currentCards.length) % currentCards.length;
+  flipped = false;
+  render();
+}
+
+function shuffleCards(){
+  for(let i=currentCards.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [currentCards[i],currentCards[j]] = [currentCards[j],currentCards[i]];
+  }
+  idx = 0; flipped = false;
+  render();
+}
+
+function resetOrder(){
+  const f = filterSelect.value;
+  currentCards = f === "ทั้งหมด" ? [...allCards] : allCards.filter(c=>c.cat===f);
+  idx = 0; flipped = false;
+  render();
+}
+
+render();
+// ---------------------------------------------------------------------------
+// ทำโดย นีโม่ ถ้าเขียนตรงไหนผิดก็บอกได้
+// ---------------------------------------------------------------------------
+
+</script>
+</body>
+</html>
