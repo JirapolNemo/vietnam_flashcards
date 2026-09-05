@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Flashcard พินอิน จีน</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&family=Noto+Sans+SC:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fdf6ec;
+    --card:#ffffff;
+    --ink:#2b2320;
+    --accent:#c0392b;
+    --accent2:#1e6f5c;
+    --muted:#8a7f76;
+    --line:#e7ddd0;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Sarabun','Noto Sans SC','Segoe UI',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:16px;
+    min-height:100vh;
+  }
+  header{
+    text-align:center;
+    margin-bottom:10px;
+  }
+  header h1{
+    font-size:1.4rem;
+    margin:0;
+    letter-spacing:1px;
+  }
+  header h1 .cn{
+    font-family:'Noto Sans SC',sans-serif;
+    color:var(--accent);
+    font-weight:700;
+  }
+  header p{
+    margin:2px 0 0;
+    color:var(--muted);
+    font-size:0.85rem;
+  }
+  .toolbar{
+    display:flex;
+    gap:8px;
+    margin:10px 0;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  select, .pillbtn{
+    font-family:inherit;
+    font-size:0.85rem;
+    padding:8px 14px;
+    border-radius:20px;
+    border:1px solid var(--line);
+    background:#fff;
+    color:var(--ink);
+  }
+  .pillbtn.active{
+    background:var(--accent);
+    color:#fff;
+    border-color:var(--accent);
+  }
+  .progress-wrap{
+    width:100%;
+    max-width:420px;
+    height:6px;
+    background:var(--line);
+    border-radius:4px;
+    overflow:hidden;
+    margin:6px 0 16px;
+  }
+  .progress-bar{
+    height:100%;
+    background:var(--accent2);
+    width:0%;
+    transition:width .2s;
+  }
+  /* Flashcard */
+  .stage{
+    width:100%;
+    max-width:420px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .card{
+    width:100%;
+    height:280px;
+    perspective:1200px;
+    cursor:pointer;
+    margin-bottom:14px;
+  }
+  .card-inner{
+    position:relative;
+    width:100%;
+    height:100%;
+    transition:transform .5s;
+    transform-style:preserve-3d;
+  }
+  .card.flipped .card-inner{
+    transform:rotateY(180deg);
+  }
+  .face{
+    position:absolute;
+    width:100%;
+    height:100%;
+    backface-visibility:hidden;
+    border-radius:18px;
+    background:var(--card);
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+    text-align:center;
+    border:1px solid var(--line);
+  }
+  .face .cat-tag{
+    position:absolute;
+    top:12px;
+    left:14px;
+    font-size:0.7rem;
+    color:var(--muted);
+    background:var(--bg);
+    padding:3px 10px;
+    border-radius:12px;
+  }
+  .front-text{
+    font-size:56px;
+    font-weight:800;
+    color:var(--accent);
+  }
+  .back .cn-word{
+    font-family:'Noto Sans SC',sans-serif;
+    font-size:34px;
+    font-weight:700;
+    margin-bottom:6px;
+  }
+  .back .th-sound{
+    font-size:20px;
+    font-weight:600;
+    color:var(--accent2);
+    margin-bottom:8px;
+  }
+  .back .th-desc{
+    font-size:14px;
+    color:var(--ink);
+    line-height:1.5;
+    max-height:130px;
+    overflow-y:auto;
+    padding:0 4px;
+  }
+  .back{
+    transform:rotateY(180deg);
+  }
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-bottom:10px;
+  }
+  button.ctrl{
+    font-family:inherit;
+    font-size:0.85rem;
+    padding:10px 16px;
+    border-radius:12px;
+    border:none;
+    background:#fff;
+    box-shadow:0 2px 6px rgba(0,0,0,0.08);
+    color:var(--ink);
+    cursor:pointer;
+  }
+  button.ctrl.primary{
+    background:var(--accent);
+    color:#fff;
+  }
+  button.ctrl.listen{
+    background:var(--accent2);
+    color:#fff;
+  }
+  .counter{
+    color:var(--muted);
+    font-size:0.8rem;
+    margin-bottom:6px;
+  }
+  /* Matrix view */
+  .matrix-wrap{
+    width:100%;
+    max-width:900px;
+    overflow-x:auto;
+    background:#fff;
+    border-radius:14px;
+    padding:12px;
+    box-shadow:0 4px 14px rgba(0,0,0,0.06);
+  }
+  table.pinyin-matrix{
+    border-collapse:collapse;
+    font-size:0.78rem;
+    width:100%;
+  }
+  table.pinyin-matrix th, table.pinyin-matrix td{
+    border:1px solid var(--line);
+    padding:5px 6px;
+    text-align:center;
+    white-space:nowrap;
+  }
+  table.pinyin-matrix th{
+    background:#f6ede0;
+    position:sticky;
+    top:0;
+  }
+  table.pinyin-matrix td.valid{
+    color:var(--ink);
+    background:#fff;
+  }
+  table.pinyin-matrix td.empty{
+    background:#f4f1ee;
+    color:#d8d0c6;
+  }
+  table.pinyin-matrix td.pending{
+    background:#fff7e0;
+    color:#c9a227;
+    font-size:0.7rem;
+  }
+  .matrix-note{
+    font-size:0.78rem;
+    color:var(--muted);
+    margin-top:8px;
+    line-height:1.5;
+  }
+  .legend{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    font-size:0.75rem;
+    color:var(--muted);
+    margin-bottom:8px;
+  }
+  .legend span{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+  }
+  .swatch{
+    width:12px;height:12px;border-radius:3px;display:inline-block;
+  }
+  .sw-valid{background:#fff;border:1px solid var(--line);}
+  .sw-empty{background:#f4f1ee;border:1px solid var(--line);}
+  .sw-pending{background:#fff7e0;border:1px solid var(--line);}
+
+  footer{
+    margin-top:20px;
+    font-size:0.72rem;
+    color:var(--muted);
+    text-align:center;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>拼音 <span class="cn">Flashcard</span></h1>
+  <p>PĪNYĪN · เทียบเสียงไทย สำหรับติวสอบฟัง</p>
+</header>
+
+<div class="toolbar">
+  <select id="categorySelect"></select>
+  <button class="pillbtn" id="viewToggleBtn">ตารางประสมเสียง</button>
+</div>
+
+<!-- FLASHCARD VIEW -->
+<div class="stage" id="flashcardView">
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+  <div class="counter" id="counterText">1 / 1</div>
+
+  <div class="card" id="card">
+    <div class="card-inner">
+      <div class="face front">
+        <div class="cat-tag" id="catTagFront"></div>
+        <div class="front-text" id="frontText">a</div>
+      </div>
+      <div class="face back">
+        <div class="cat-tag" id="catTagBack"></div>
+        <div class="cn-word" id="backCn"></div>
+        <div class="th-sound" id="backThSound"></div>
+        <div class="th-desc" id="backDesc"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="ctrl" id="prevBtn">‹ ก่อนหน้า</button>
+    <button class="ctrl primary" id="flipBtn">พลิกการ์ด</button>
+    <button class="ctrl" id="nextBtn">ถัดไป ›</button>
+  </div>
+  <div class="controls">
+    <button class="ctrl listen" id="listenBtn">🔊 ฟังเสียง</button>
+    <button class="ctrl" id="shuffleBtn">🔀 สุ่ม</button>
+    <button class="ctrl" id="resetBtn">↺ เรียงใหม่</button>
+  </div>
+</div>
+
+<!-- MATRIX VIEW -->
+<div class="matrix-wrap" id="matrixView" style="display:none;">
+  <div class="legend">
+    <span><span class="swatch sw-valid"></span> มีคำนี้จริง</span>
+    <span><span class="swatch sw-empty"></span> ไม่มีเสียงนี้ (ห้ามฟังผิดเป็นคำนี้)</span>
+  </div>
+  <div id="matrixContainer"></div>
+  <div class="matrix-note">
+    ตารางเต็ม 21 พยัญชนะต้น + ศูนย์พยัญชนะ × 38 สระ (普通话声母韵母拼合总表) เลื่อนซ้าย-ขวาเพื่อดูคอลัมน์ที่เหลือ · <b>-i[ɿ]</b> ใช้เฉพาะหลัง z c s (เช่น zi ci si) และ <b>-i[ʅ]</b> ใช้เฉพาะหลัง zh ch sh r (เช่น zhi chi shi ri) — สองเสียงนี้หน้าตาคำเหมือนกัน (-i) แต่ออกเสียงคนละแบบ ห้ามสับสน
+  </div>
+</div>
+
+<footer>ทำไว้ใช้ติวสอบฟังภาษาจีน · อิงตามหนังสือเรียนบทที่ 1-4</footer>
+
+<script>
+/* ================= DATA ================= */
+
+// ---------- Flashcard categories ----------
+const allCards = [];
+
+// 声母 Initials
+const initials = [
+  {front:"b", cn:"b", th:"ป (ไม่มีลม)", desc:"ริมฝีปากบน-ล่างประกบกันแน่นแล้วปล่อยลมออกทันที ไม่มีลมพ่นแรง เทียบเสียง ป ไทย"},
+  {front:"p", cn:"p", th:"พ (มีลม)", desc:"ริมฝีปากบน-ล่างประกบกันเหมือน b แต่ปล่อยลมพ่นแรง เทียบเสียง พ ไทย"},
+  {front:"m", cn:"m", th:"ม (นาสิก)", desc:"ริมฝีปากประกบกัน ปล่อยเสียงออกทางจมูก เทียบเสียง ม ไทย"},
+  {front:"f", cn:"f", th:"ฟ (เสียดแทรก)", desc:"ฟันบนแตะริมฝีปากล่าง ปล่อยลมเสียดแทรกออกมา เทียบเสียง ฟ ไทย"},
+  {front:"d", cn:"d", th:"ต (ไม่มีลม)", desc:"ปลายลิ้นแตะปุ่มเหงือก ปล่อยลมออกทันทีไม่มีลมแรง เทียบเสียง ต ไทย"},
+  {front:"t", cn:"t", th:"ท (มีลม)", desc:"ปลายลิ้นแตะปุ่มเหงือกเหมือน d แต่ปล่อยลมพ่นแรง เทียบเสียง ท ไทย"},
+  {front:"n", cn:"n", th:"น (นาสิก)", desc:"ปลายลิ้นแตะปุ่มเหงือก ปล่อยเสียงออกทางจมูก เทียบเสียง น ไทย"},
+  {front:"l", cn:"l", th:"ล", desc:"ปลายลิ้นแตะปุ่มเหงือก ลมออกด้านข้างลิ้นทั้งสองข้าง เทียบเสียง ล ไทย"},
+  {front:"g", cn:"g", th:"ก (ไม่มีลม)", desc:"โคนลิ้นแตะเพดานอ่อน ปล่อยลมออกทันที เทียบเสียง ก ไทย"},
+  {front:"k", cn:"k", th:"ข (มีลม)", desc:"โคนลิ้นแตะเพดานอ่อนเหมือน g แต่ปล่อยลมพ่นแรง เทียบเสียง ข ไทย"},
+  {front:"h", cn:"h", th:"ฮ (เสียดแทรก)", desc:"โคนลิ้นเข้าใกล้เพดานอ่อน ลมเสียดแทรกผ่านออกมา เทียบเสียง ฮ ไทย"},
+  {front:"j", cn:"j", th:"จ (ลิ้นแบน ไม่มีลม)", desc:"กลางลิ้นแตะเพดานแข็ง ลิ้นแบนราบ ไม่ม้วน ไม่มีลมพ่นแรง ใช้กับสระ i/ü เท่านั้น"},
+  {front:"q", cn:"q", th:"ช (ลิ้นแบน มีลม)", desc:"ตำแหน่งลิ้นเหมือน j แต่ปล่อยลมพ่นแรง ใช้กับสระ i/ü เท่านั้น"},
+  {front:"x", cn:"x", th:"ซ/ช (เสียดแทรก)", desc:"กลางลิ้นเข้าใกล้เพดานแข็ง ลมเสียดแทรก ลิ้นแบน ใช้กับสระ i/ü เท่านั้น"},
+  {front:"z", cn:"z", th:"จ (ลิ้นแบน ไม่มีลม)", desc:"ปลายลิ้นแตะหลังฟันบน ลิ้นแบนไม่ม้วน ไม่มีลมพ่นแรง ต่างจาก zh ตรงที่ไม่ม้วนลิ้น"},
+  {front:"c", cn:"c", th:"ช (ลิ้นแบน มีลม)", desc:"ตำแหน่งลิ้นเหมือน z แต่ปล่อยลมพ่นแรง ลิ้นแบนไม่ม้วน"},
+  {front:"s", cn:"s", th:"ซ (เสียดแทรก)", desc:"ปลายลิ้นใกล้หลังฟันบน ลิ้นแบนไม่ม้วน ลมเสียดแทรกออกมา"},
+  {front:"zh", cn:"zh", th:"จ ม้วนลิ้น (ไม่มีลม)", desc:"ปลายลิ้นม้วนขึ้นแตะปุ่มเหงือกส่วนหลัง ไม่มีลมพ่นแรง ฟังคล้าย z แต่ลิ้นม้วน"},
+  {front:"ch", cn:"ch", th:"ช ม้วนลิ้น (มีลม)", desc:"ตำแหน่งลิ้นเหมือน zh แต่ปล่อยลมพ่นแรง ฟังคล้าย c แต่ลิ้นม้วน"},
+  {front:"sh", cn:"sh", th:"ช/ซ ม้วนลิ้น (เสียดแทรก)", desc:"ปลายลิ้นม้วนใกล้ปุ่มเหงือกส่วนหลัง ลมเสียดแทรก ฟังคล้าย s แต่ลิ้นม้วน"},
+  {front:"r", cn:"r", th:"ร ม้วนลิ้น (เสียงก้อง)", desc:"ตำแหน่งลิ้นใกล้เคียง sh แต่เส้นเสียงสั่น (มีเสียงก้อง) ฟังคล้าย sh ที่มีเสียงก้อง"},
+];
+initials.forEach(x=>allCards.push({cat:"声母 พยัญชนะต้น", front:x.front, cn:x.cn, th:x.th, desc:x.desc, viet:x.front}));
+
+// 单韵母 simple finals
+const simpleFinals = [
+  {front:"a", th:"อา", desc:"อ้าปากกว้างที่สุด ลิ้นอยู่ตำแหน่งต่ำ ไม่ห่อปาก"},
+  {front:"o", th:"โอ", desc:"ริมฝีปากห่อกลม ลิ้นอยู่ตำแหน่งกึ่งสูงค่อนไปทางหลัง"},
+  {front:"e", th:"เออ", desc:"ลิ้นอยู่กลางปาก ไม่ห่อปาก ตำแหน่งกึ่งสูงค่อนไปทางหลัง"},
+  {front:"i", th:"อี", desc:"ยิ้มกว้าง ลิ้นอยู่ตำแหน่งสูงและอยู่ด้านหน้า"},
+  {front:"u", th:"อู", desc:"ห่อปากกลมที่สุด อ้าปากน้อยที่สุด ลิ้นอยู่ตำแหน่งสูงและค่อนไปข้างหลัง"},
+  {front:"ü", th:"อวี", desc:"ลิ้นอยู่ตำแหน่งสูงและค่อนไปข้างหน้าเหมือน i แต่ริมฝีปากห่อกลมเหมือน u"},
+  {front:"-i [ɿ]", th:"(หลัง z c s)", desc:"ไม่ใช่เสียงสระจริง แต่เป็นการยืดเสียงพยัญชนะต้น z/c/s ต่อ ลิ้นแบนไม่ม้วน — ใช้เฉพาะหลัง z c s เท่านั้น"},
+  {front:"-i [ʅ]", th:"(หลัง zh ch sh r)", desc:"เหมือน -i[ɿ] แต่ลิ้นม้วน — ใช้เฉพาะหลัง zh ch sh r เท่านั้น"},
+  {front:"er", th:"เอ๋อ (ม้วนลิ้น)", desc:"ออกเสียงคล้าย e แล้วม้วนปลายลิ้นขึ้นระหว่างออกเสียง เป็นสระม้วนลิ้นเสียงเดียวที่มีในภาษาจีน"},
+];
+simpleFinals.forEach(x=>allCards.push({cat:"单韵母 สระเดี่ยว", front:x.front, cn:x.front.replace(/ \[.*|\(.*/,''), th:x.th, desc:x.desc, viet:x.front.split(" ")[0]}));
+
+// 复韵母 compound finals
+const compoundFinals = [
+  {front:"ai", th:"อาย", desc:"ลิ้นอยู่หลังก่อน (a) แล้วค่อยๆ ยกสูงขึ้นไปจนถึง i คือ a→i"},
+  {front:"ei", th:"เอย", desc:"ลิ้นอยู่หน้าก่อน (e) แล้วค่อยๆ ยกสูงขึ้นพร้อมหุบปากแคบลงจนถึง i คือ e→i"},
+  {front:"ao", th:"อาว", desc:"ลิ้นอยู่หลังก่อน (a) แล้วค่อยๆ ยกสูงขึ้นและห่อปากกลมจนถึง o/u คือ a→o"},
+  {front:"ou", th:"โอว", desc:"ริมฝีปากห่อกลมเล็กน้อยก่อน (o) แล้วค่อยๆ ห่อกลมมากขึ้นจนถึง u คือ o→u"},
+];
+compoundFinals.forEach(x=>allCards.push({cat:"复韵母 สระประสม", front:x.front, cn:x.front, th:x.th, desc:x.desc, viet:x.front}));
+
+// 鼻韵母 nasal finals (single vowel + nasal)
+const nasalFinals = [
+  {front:"an", th:"อาน", desc:"ลิ้นอยู่หน้าก่อน (a) แล้วปลายลิ้นยื่นไปแตะปุ่มเหงือกออกเสียงจมูก คือ a→n"},
+  {front:"en", th:"เอิน", desc:"ลิ้นอยู่กลางก่อน (e) แล้วปลายลิ้นแตะปุ่มเหงือกออกเสียงจมูก คือ e→n"},
+  {front:"ang", th:"อาง", desc:"ลิ้นอยู่หลังก่อน (a) แล้วโคนลิ้นถอยไปแตะเพดานอ่อนออกเสียงจมูก คือ a→ng"},
+  {front:"eng", th:"เอิง", desc:"ลิ้นอยู่กลางก่อน (e) แล้วโคนลิ้นแตะเพดานอ่อนออกเสียงจมูก คือ e→ng"},
+  {front:"ong", th:"อง", desc:"ริมฝีปากห่อกลมคล้าย u ก่อน แล้วโคนลิ้นแตะเพดานอ่อนออกเสียงจมูก คือ o→ng"},
+];
+nasalFinals.forEach(x=>allCards.push({cat:"鼻韵母 สระประสมเสียงจมูก", front:x.front, cn:x.front, th:x.th, desc:x.desc, viet:x.front}));
+
+// i-series compound & nasal finals
+const iSeries = [
+  {front:"ia", th:"เอีย", desc:"เริ่มจากลิ้นสูง (i) แล้วค่อยๆ ลดต่ำลงจนถึง a คือ i→a"},
+  {front:"ie", th:"เอีย(ะ)", desc:"เริ่มจาก i แล้วลดระดับลิ้นลงจนถึงเสียง ê [ɛ] คือ i→ê — สระ e ในตัวนี้อ่านต่างจาก e เดี่ยว"},
+  {front:"iao", th:"เอียว", desc:"เรียง i→a→o ลิ้นสูงก่อนแล้วลดต่ำแล้วห่อปากกลม"},
+  {front:"iu (iou)", th:"อิว", desc:"รูปเต็มคือ iou (i→o→u) แต่เมื่อมีพยัญชนะต้นนำหน้าจะย่อเขียนเป็น -iu"},
+  {front:"ian", th:"เอียน", desc:"i แล้วตามด้วย an (ออกเสียงคล้าย iɛn) จบด้วยเสียงจมูก n"},
+  {front:"in", th:"อิน", desc:"i ตามด้วยเสียงจมูก n โดยตรง"},
+  {front:"iang", th:"เอียง", desc:"i→ang ลิ้นสูงก่อนแล้วเลื่อนไปเสียง ang ปิดท้ายด้วยจมูก ng"},
+  {front:"ing", th:"อิง", desc:"i ตามด้วยเสียงจมูก ng โดยตรง"},
+  {front:"iong", th:"อวง", desc:"i ปากห่อกลมเลื่อนไปเสียง ong ปิดท้ายด้วยจมูก ng"},
+];
+iSeries.forEach(x=>allCards.push({cat:"复合韵母 i- สระผสมขึ้นต้นด้วย i", front:x.front, cn:x.front, th:x.th, desc:x.desc, viet:x.front.split(" ")[0]}));
+
+// u-series compound & nasal finals
+const uSeries = [
+  {front:"ua", th:"วา", desc:"u ปากกลมก่อน แล้วค่อยๆ ลดระดับลิ้นและคลายห่อปากจนถึง a คือ u→a"},
+  {front:"uo", th:"วอ", desc:"u แล้วค่อยๆ ลดระดับลิ้นลงจนถึง o คือ u→o"},
+  {front:"uai", th:"วาย", desc:"u แล้วตามด้วย ai คือ u→ai"},
+  {front:"ui (uei)", th:"เวย", desc:"รูปเต็มคือ uei (u→ei) แต่เมื่อมีพยัญชนะต้นนำหน้าจะย่อเขียนเป็น -ui"},
+  {front:"uan", th:"วาน", desc:"u แล้วตามด้วย an คือ u→an"},
+  {front:"un (uen)", th:"เวิน", desc:"รูปเต็มคือ uen (u→en) แต่เมื่อมีพยัญชนะต้นนำหน้าจะย่อเขียนเป็น -un"},
+  {front:"uang", th:"วาง", desc:"u แล้วตามด้วย ang คือ u→ang"},
+  {front:"ueng", th:"เวิง", desc:"u แล้วตามด้วย eng คือ u→eng (ใช้เป็นพยางค์เดี่ยว weng เท่านั้น ไม่ตามพยัญชนะต้น)"},
+];
+uSeries.forEach(x=>allCards.push({cat:"复合韵母 u- สระผสมขึ้นต้นด้วย u", front:x.front, cn:x.front, th:x.th, desc:x.desc, viet:x.front.split(" ")[0]}));
+
+// ü-series
+const uumlautSeries = [
+  {front:"üe", th:"เยว่", desc:"ü แล้วลดระดับลิ้นลงจนถึงเสียง ê [ɛ] คือ ü→ê"},
+  {front:"üan", th:"เยวียน", desc:"ü แล้วตามด้วย an (ลิ้นสูงกว่า an ปกติเล็กน้อย) คือ ü→an"},
+  {front:"ün", th:"วิน", desc:"ü ตามด้วยเสียงจมูก n โดยตรง คือ ü→n"},
+];
+uumlautSeries.forEach(x=>allCards.push({cat:"复合韵母 ü- สระผสมขึ้นต้นด้วย ü", front:x.front, cn:x.front, th:x.th, desc:x.desc, viet:x.front.split(" ")[0]}));
+
+// 声调 tones & rules (reference cards, no TTS needed but included anyway)
+const tones = [
+  {front:"第一声 ˉ", th:"เสียงที่ 1 ระดับสูงคงที่ (55)", desc:"เสียงราบเรียบระดับสูงตลอด เช่น bā (八 แปด)"},
+  {front:"第二声 ˊ", th:"เสียงที่ 2 เสียงสูงขึ้น (35)", desc:"เสียงไล่จากกลางขึ้นสูง คล้ายเสียงถามในภาษาไทย เช่น bá (拔 ถอน)"},
+  {front:"第三声 ˇ", th:"เสียงที่ 3 เสียงลง-ขึ้น (214)", desc:"เสียงลดต่ำลงก่อนแล้วขึ้นสูง เช่น bǎ (靶 เป้า)"},
+  {front:"第四声 ˋ", th:"เสียงที่ 4 เสียงตกลงแรง (51)", desc:"เสียงตกจากสูงลงต่ำอย่างรวดเร็วและหนักแน่น เช่น bà (爸 พ่อ)"},
+  {front:"三声连读", th:"กฎ: เสียง3+เสียง3 ติดกัน", desc:"เมื่อพยางค์เสียงที่ 3 อยู่ติดกัน 2 พยางค์ ให้อ่านพยางค์แรกเป็นเสียงที่ 2 เช่น Nǐ hǎo → อ่านจริงเป็น Ní hǎo"},
+  {front:"不 การแปรเสียง", th:"กฎ: 不 หน้าเสียงที่ 4", desc:"不 ปกติออกเสียงที่ 4 (bù) แต่ถ้าคำถัดไปเป็นเสียงที่ 4 ให้เปลี่ยน 不 เป็นเสียงที่ 2 (bú) เช่น bú xiè (不谢)"},
+  {front:"轻声", th:"เสียงเบา ไม่มีวรรณยุกต์", desc:"บางพยางค์ (มักเป็นคำลงท้าย เช่น 们men, 吗ma) ออกเสียงเบาและสั้น ไม่เน้นเสียง ไม่มีเครื่องหมายวรรณยุกต์ เช่น māma, nǐmen, tāmen"},
+];
+tones.forEach(x=>allCards.push({cat:"声调 วรรณยุกต์และการแปรเสียง", front:x.front, cn:"", th:x.th, desc:x.desc, viet:null}));
+
+
+/* ================= COMBINATION MATRIX DATA ================= */
+// Complete official 普通话声母韵母拼合总表 (38 finals x 22 initials incl. zero-initial)
+// Source: reference chart provided by user, cross-checked against textbook photos.
+const matrixCols = [
+  "a","o","e","-i[ɿ]","-i[ʅ]","er","ai","ei","ao","ou","an","en","ang","eng",
+  "i","ia","ie","iao","iu","ian","in","iang","ing",
+  "u","ua","uo","uai","ui","uan","un","uang","ueng","ong",
+  "ü","üe","üan","ün","iong"
+];
+const matrixRows = ["(零声母)","b","p","m","f","d","t","n","l","g","k","h","j","q","x","zh","ch","sh","r","z","c","s"];
+
+function row(obj){
+  // obj: {colName: value} sparse map -> full array aligned to matrixCols
+  return matrixCols.map(c => obj[c] || "");
+}
+
+const matrixData = {
+  "(零声母)": row({a:"a",o:"o",e:"e",er:"er",ai:"ai",ei:"ei",ao:"ao",ou:"ou",an:"an",en:"en",ang:"ang",eng:"eng",
+    i:"yi",ia:"ya",ie:"ye",iao:"yao",iu:"you",ian:"yan",in:"yin",iang:"yang",ing:"ying",
+    u:"wu",ua:"wa",uo:"wo",uai:"wai",ui:"wei",uan:"wan",un:"wen",uang:"wang",ueng:"weng",
+    "ü":"yu","üe":"yue","üan":"yuan","ün":"yun",iong:"yong"}),
+  b: row({a:"ba",o:"bo",ai:"bai",ei:"bei",ao:"bao",an:"ban",en:"ben",ang:"bang",eng:"beng",
+    i:"bi",ie:"bie",iao:"biao",ian:"bian",in:"bin",ing:"bing", u:"bu"}),
+  p: row({a:"pa",o:"po",ai:"pai",ei:"pei",ao:"pao",ou:"pou",an:"pan",en:"pen",ang:"pang",eng:"peng",
+    i:"pi",ie:"pie",iao:"piao",ian:"pian",in:"pin",ing:"ping", u:"pu"}),
+  m: row({a:"ma",o:"mo",e:"me",ai:"mai",ei:"mei",ao:"mao",ou:"mou",an:"man",en:"men",ang:"mang",eng:"meng",
+    i:"mi",ie:"mie",iao:"miao",iu:"miu",ian:"mian",in:"min",ing:"ming", u:"mu"}),
+  f: row({a:"fa",o:"fo",ei:"fei",ou:"fou",an:"fan",en:"fen",ang:"fang",eng:"feng", u:"fu"}),
+  d: row({a:"da",e:"de",ai:"dai",ei:"dei",ao:"dao",ou:"dou",an:"dan",ang:"dang",eng:"deng",ong:"dong",
+    i:"di",ie:"die",iao:"diao",iu:"diu",ian:"dian",ing:"ding",
+    u:"du",uo:"duo",ui:"dui",uan:"duan",un:"dun"}),
+  t: row({a:"ta",e:"te",ai:"tai",ao:"tao",ou:"tou",an:"tan",ang:"tang",eng:"teng",ong:"tong",
+    i:"ti",ie:"tie",iao:"tiao",ian:"tian",ing:"ting",
+    u:"tu",uo:"tuo",ui:"tui",uan:"tuan",un:"tun"}),
+  n: row({a:"na",e:"ne",ai:"nai",ei:"nei",ao:"nao",ou:"nou",an:"nan",en:"nen",ang:"nang",eng:"neng",ong:"nong",
+    i:"ni",ie:"nie",iao:"niao",iu:"niu",ian:"nian",in:"nin",iang:"niang",ing:"ning",
+    u:"nu",uo:"nuo",uan:"nuan",
+    "ü":"nü","üe":"nüe"}),
+  l: row({a:"la",e:"le",ai:"lai",ei:"lei",ao:"lao",ou:"lou",an:"lan",ang:"lang",eng:"leng",ong:"long",
+    i:"li",ia:"lia",ie:"lie",iao:"liao",iu:"liu",ian:"lian",in:"lin",iang:"liang",ing:"ling",
+    u:"lu",uo:"luo",uan:"luan",un:"lun",
+    "ü":"lü","üe":"lüe"}),
+  g: row({a:"ga",e:"ge",ai:"gai",ei:"gei",ao:"gao",ou:"gou",an:"gan",en:"gen",ang:"gang",eng:"geng",ong:"gong",
+    u:"gu",ua:"gua",uo:"guo",uai:"guai",ui:"gui",uan:"guan",un:"gun",uang:"guang"}),
+  k: row({a:"ka",e:"ke",ai:"kai",ei:"kei",ao:"kao",ou:"kou",an:"kan",en:"ken",ang:"kang",eng:"keng",ong:"kong",
+    u:"ku",ua:"kua",uo:"kuo",uai:"kuai",ui:"kui",uan:"kuan",un:"kun",uang:"kuang"}),
+  h: row({a:"ha",e:"he",ai:"hai",ei:"hei",ao:"hao",ou:"hou",an:"han",en:"hen",ang:"hang",eng:"heng",ong:"hong",
+    u:"hu",ua:"hua",uo:"huo",uai:"huai",ui:"hui",uan:"huan",un:"hun",uang:"huang"}),
+  j: row({i:"ji",ia:"jia",ie:"jie",iao:"jiao",iu:"jiu",ian:"jian",in:"jin",iang:"jiang",ing:"jing",
+    "ü":"ju","üe":"jue","üan":"juan","ün":"jun",iong:"jiong"}),
+  q: row({i:"qi",ia:"qia",ie:"qie",iao:"qiao",iu:"qiu",ian:"qian",in:"qin",iang:"qiang",ing:"qing",
+    "ü":"qu","üe":"que","üan":"quan","ün":"qun",iong:"qiong"}),
+  x: row({i:"xi",ia:"xia",ie:"xie",iao:"xiao",iu:"xiu",ian:"xian",in:"xin",iang:"xiang",ing:"xing",
+    "ü":"xu","üe":"xue","üan":"xuan","ün":"xun",iong:"xiong"}),
+  zh: row({a:"zha",e:"zhe","-i[ʅ]":"zhi",ai:"zhai",ei:"zhei",ao:"zhao",ou:"zhou",an:"zhan",en:"zhen",ang:"zhang",eng:"zheng",ong:"zhong",
+    u:"zhu",ua:"zhua",uo:"zhuo",uai:"zhuai",ui:"zhui",uan:"zhuan",un:"zhun",uang:"zhuang"}),
+  ch: row({a:"cha",e:"che","-i[ʅ]":"chi",ai:"chai",ao:"chao",ou:"chou",an:"chan",en:"chen",ang:"chang",eng:"cheng",ong:"chong",
+    u:"chu",uo:"chuo",uai:"chuai",ui:"chui",uan:"chuan",un:"chun",uang:"chuang"}),
+  sh: row({a:"sha",e:"she","-i[ʅ]":"shi",ai:"shai",ei:"shei",ao:"shao",ou:"shou",an:"shan",en:"shen",ang:"shang",eng:"sheng",
+    u:"shu",ua:"shua",uo:"shuo",uai:"shuai",ui:"shui",uan:"shuan",un:"shun",uang:"shuang"}),
+  r: row({e:"re","-i[ʅ]":"ri",ao:"rao",ou:"rou",an:"ran",en:"ren",ang:"rang",eng:"reng",ong:"rong",
+    u:"ru",ua:"rua",uo:"ruo",ui:"rui",uan:"ruan",un:"run"}),
+  z: row({a:"za",e:"ze","-i[ɿ]":"zi",ai:"zai",ei:"zei",ao:"zao",ou:"zou",an:"zan",en:"zen",ang:"zang",eng:"zeng",ong:"zong",
+    u:"zu",uo:"zuo",ui:"zui",uan:"zuan",un:"zun"}),
+  c: row({a:"ca",e:"ce","-i[ɿ]":"ci",ai:"cai",ao:"cao",ou:"cou",an:"can",en:"cen",ang:"cang",eng:"ceng",ong:"cong",
+    u:"cu",uo:"cuo",ui:"cui",uan:"cuan",un:"cun"}),
+  s: row({a:"sa",e:"se","-i[ɿ]":"si",ai:"sai",ao:"sao",ou:"sou",an:"san",en:"sen",ang:"sang",eng:"seng",ong:"song",
+    u:"su",uo:"suo",ui:"sui",uan:"suan",un:"sun"}),
+};
+
+/* ================= STATE ================= */
+let currentCards = allCards.slice();
+let idx = 0;
+let showingMatrix = false;
+
+/* ================= DOM ================= */
+const categorySelect = document.getElementById('categorySelect');
+const viewToggleBtn = document.getElementById('viewToggleBtn');
+const flashcardView = document.getElementById('flashcardView');
+const matrixView = document.getElementById('matrixView');
+
+const cardEl = document.getElementById('card');
+const frontText = document.getElementById('frontText');
+const backCn = document.getElementById('backCn');
+const backThSound = document.getElementById('backThSound');
+const backDesc = document.getElementById('backDesc');
+const catTagFront = document.getElementById('catTagFront');
+const catTagBack = document.getElementById('catTagBack');
+const counterText = document.getElementById('counterText');
+const progressBar = document.getElementById('progressBar');
+
+// build category dropdown
+const categories = ["ทั้งหมด", ...new Set(allCards.map(c=>c.cat))];
+categorySelect.innerHTML = categories.map(c=>`<option value="${c}">${c}</option>`).join('');
+
+function setCategory(cat){
+  currentCards = (cat === "ทั้งหมด") ? allCards.slice() : allCards.filter(c=>c.cat===cat);
+  idx = 0;
+  render();
+}
+
+function render(){
+  if(currentCards.length===0){ return; }
+  const c = currentCards[idx];
+  cardEl.classList.remove('flipped');
+  frontText.textContent = c.front;
+  backCn.textContent = c.cn || "";
+  backThSound.textContent = c.th || "";
+  backDesc.textContent = c.desc || "";
+  catTagFront.textContent = c.cat;
+  catTagBack.textContent = c.cat;
+  counterText.textContent = `${idx+1} / ${currentCards.length}`;
+  progressBar.style.width = `${((idx+1)/currentCards.length)*100}%`;
+}
+
+function flipCard(){ cardEl.classList.toggle('flipped'); }
+function nextCard(){ idx = (idx+1) % currentCards.length; render(); }
+function prevCard(){ idx = (idx-1+currentCards.length) % currentCards.length; render(); }
+function shuffleCards(){
+  for(let i=currentCards.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [currentCards[i],currentCards[j]] = [currentCards[j],currentCards[i]];
+  }
+  idx=0; render();
+}
+function resetOrder(){
+  const cat = categorySelect.value;
+  setCategory(cat);
+}
+
+/* TTS */
+let zhVoice = null;
+function loadVoices(){
+  const voices = speechSynthesis.getVoices();
+  zhVoice = voices.find(v=>v.lang === 'zh-CN') || voices.find(v=>v.lang && v.lang.startsWith('zh'));
+}
+loadVoices();
+if('onvoiceschanged' in speechSynthesis){ speechSynthesis.onvoiceschanged = loadVoices; }
+
+function speakWord(){
+  const c = currentCards[idx];
+  const text = c.viet || c.front;
+  if(!text){ alert('การ์ดนี้ไม่มีเสียงให้ฟัง'); return; }
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'zh-CN';
+  if(zhVoice){ utter.voice = zhVoice; }
+  else {
+    alert('ไม่พบเสียงพากย์ภาษาจีนในอุปกรณ์นี้ อาจฟังเป็นเสียงภาษาอื่นแทน');
+  }
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utter);
+}
+
+/* Matrix rendering: one complete table, matching the official reference chart */
+function renderMatrix(){
+  const container = document.getElementById('matrixContainer');
+  let html = `<table class="pinyin-matrix"><thead><tr><th></th>`;
+  matrixCols.forEach(c=> html += `<th>${c}</th>`);
+  html += `</tr></thead><tbody>`;
+  matrixRows.forEach(r=>{
+    html += `<tr><th>${r}</th>`;
+    const vals = matrixData[r] || [];
+    matrixCols.forEach((c,i)=>{
+      const v = vals[i] || "";
+      if(v===""){
+        html += `<td class="empty">—</td>`;
+      } else {
+        html += `<td class="valid">${v}</td>`;
+      }
+    });
+    html += `</tr>`;
+  });
+  html += `</tbody></table>`;
+  container.innerHTML = html;
+}
+
+/* View toggle */
+viewToggleBtn.addEventListener('click', ()=>{
+  showingMatrix = !showingMatrix;
+  if(showingMatrix){
+    flashcardView.style.display = 'none';
+    matrixView.style.display = 'block';
+    viewToggleBtn.textContent = 'กลับไปหน้าการ์ด';
+    viewToggleBtn.classList.add('active');
+    renderMatrix();
+  } else {
+    flashcardView.style.display = 'flex';
+    matrixView.style.display = 'none';
+    viewToggleBtn.textContent = 'ตารางประสมเสียง';
+    viewToggleBtn.classList.remove('active');
+  }
+});
+
+/* Events */
+categorySelect.addEventListener('change', e=> setCategory(e.target.value));
+cardEl.addEventListener('click', flipCard);
+document.getElementById('flipBtn').addEventListener('click', flipCard);
+document.getElementById('nextBtn').addEventListener('click', nextCard);
+document.getElementById('prevBtn').addEventListener('click', prevCard);
+document.getElementById('shuffleBtn').addEventListener('click', shuffleCards);
+document.getElementById('resetBtn').addEventListener('click', resetOrder);
+document.getElementById('listenBtn').addEventListener('click', speakWord);
+
+/* init */
+setCategory("ทั้งหมด");
+</script>
+</body>
+</html>
